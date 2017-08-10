@@ -1,0 +1,8 @@
+body {
+    background-color: yellow;
+}
+#myDiagramDiv {
+    width: 100%;
+    height: 450px;
+    background-color: #DAE4E4;
+}

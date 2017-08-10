@@ -1,0 +1,34 @@
+import org.apache.tools.ant.taskdefs.condition.Os
+apply plugin: 'java'
+
+defaultTasks 'dist'
+
+task npmInstall(type: Exec) {
+	if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+		commandLine 'cmd', '/c', 'npm install'
+    } else {
+		commandLine 'npm install'
+	}
+}
+
+task npmRunBuild(dependsOn: [npmInstall], type: Exec) {
+    if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+        commandLine 'cmd', '/c', 'npm run build'
+    } else {
+        commandLine 'npm run build'
+    }
+}
+
+task dist(dependsOn: [npmRunBuild]) {
+    doLast {
+        println 'building the distribution'
+    }
+}
+
+build.dependsOn dist
+
+jar {
+    into 'resources', {
+        from 'dist'
+    }
+}
