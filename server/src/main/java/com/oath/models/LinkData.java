@@ -1,15 +1,24 @@
 package com.oath.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.*;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@RequiredArgsConstructor
+@NoArgsConstructor
 public class LinkData {
-    private int from;
-    private int to;
+
+    @NonNull
+    private Integer from;
+
+    @NonNull
+    private Integer to;
+
+    @NonNull
     private String text;
-    private int curviness;
+
+    private Integer curviness;
+
 }

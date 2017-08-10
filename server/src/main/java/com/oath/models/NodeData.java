@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class NodeData {
-    private Long id;
+    private int id;
     private String loc;
     private String text;
 }

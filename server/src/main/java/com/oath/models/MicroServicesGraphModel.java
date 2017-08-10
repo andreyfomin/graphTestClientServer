@@ -10,7 +10,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MicroServicesGraphModel {
-    private String nodeKeyProperty = "id";
+    private String nodeKeyProperty;
     private List<NodeData> nodeDataArray;
     private List<LinkData> linkDataArray;
 }
