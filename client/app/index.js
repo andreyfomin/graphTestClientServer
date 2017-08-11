@@ -7,29 +7,29 @@ import './index.css';
 const jsonData = {
     nodeKeyProperty: "id",
     nodeDataArray: [
-        { id: 0, loc: "120 120", text: "Initial" },
-        { id: 1, loc: "330 120", text: "First down" },
-        { id: 2, loc: "226 376", text: "First up" },
-        { id: 3, loc: "60 276", text: "Second down" },
-        { id: 4, loc: "226 226", text: "Wait" }
+        {id: 0, loc: "120 120", text: "Initial"},
+        {id: 1, loc: "330 120", text: "First down"},
+        {id: 2, loc: "226 376", text: "First up"},
+        {id: 3, loc: "60 276", text: "Second down"},
+        {id: 4, loc: "226 226", text: "Wait"}
     ],
     linkDataArray: [
-        { from: 0, to: 0, text: "up or timer", curviness: -20 },
-        { from: 0, to: 1, text: "down", curviness: 20 },
-        { from: 1, to: 0, text: "up (moved)\nPOST", curviness: 20 },
-        { from: 1, to: 1, text: "down", curviness: -20 },
-        { from: 1, to: 2, text: "up (no move)" },
-        { from: 1, to: 4, text: "timer" },
-        { from: 2, to: 0, text: "timer\nPOST" },
-        { from: 2, to: 3, text: "down" },
-        { from: 3, to: 0, text: "up\nPOST\n(dblclick\nif no move)" },
-        { from: 3, to: 3, text: "down or timer", "curviness": 20 },
-        { from: 4, to: 0, text: "up\nPOST" },
-        { from: 4, to: 4, text: "down" }
+        {from: 0, to: 0, text: "up or timer", curviness: -20},
+        {from: 0, to: 1, text: "down", curviness: 20},
+        {from: 1, to: 0, text: "up (moved)\nPOST", curviness: 20},
+        {from: 1, to: 1, text: "down", curviness: -20},
+        {from: 1, to: 2, text: "up (no move)"},
+        {from: 1, to: 4, text: "timer"},
+        {from: 2, to: 0, text: "timer\nPOST"},
+        {from: 2, to: 3, text: "down"},
+        {from: 3, to: 0, text: "up\nPOST\n(dblclick\nif no move)"},
+        {from: 3, to: 3, text: "down or timer", "curviness": 20},
+        {from: 4, to: 0, text: "up\nPOST"},
+        {from: 4, to: 4, text: "down"}
     ]
 };
 
-jquery( "body" ).append("<div id='myDiagramDiv'>Hello</div>");
+jquery("body").append("<div id='myDiagramDiv'>Hello</div>");
 
 go.licenseKey = "123456789";
 
@@ -42,13 +42,13 @@ const myDiagram =
             // have mouse wheel events zoom in and out instead of scroll up and down
             "toolManager.mouseWheelBehavior": go.ToolManager.WheelZoom,
             // support double-click in background creating a new node
-            "clickCreatingTool.archetypeNodeData": { text: "new node" },
+            "clickCreatingTool.archetypeNodeData": {text: "new node"},
             // enable undo & redo
             "undoManager.isEnabled": true
         });
 
 // when the document is modified, add a "*" to the title and enable the "Save" button
-myDiagram.addDiagramListener("Modified", function(e) {
+myDiagram.addDiagramListener("Modified", function (e) {
     var button = document.getElementById("SaveButton");
     if (button) button.disabled = !myDiagram.isModified;
     var idx = document.title.indexOf("*");
@@ -67,7 +67,7 @@ myDiagram.nodeTemplate =
         $(go.Shape, "RoundedRectangle",
             {
                 parameter1: 20,  // the corner has a large radius
-                fill: $(go.Brush, "Linear", { 0: "rgb(254, 201, 0)", 1: "rgb(254, 162, 0)" }),
+                fill: $(go.Brush, "Linear", {0: "rgb(254, 201, 0)", 1: "rgb(254, 162, 0)"}),
                 stroke: null,
                 portId: "",  // this Shape is the Node's port, not the whole Node
                 fromLinkable: true, fromLinkableSelfNode: true, fromLinkableDuplicates: true,
@@ -86,7 +86,7 @@ myDiagram.nodeTemplate =
 myDiagram.nodeTemplate.selectionAdornmentTemplate =
     $(go.Adornment, "Spot",
         $(go.Panel, "Auto",
-            $(go.Shape, { fill: null, stroke: "blue", strokeWidth: 2 }),
+            $(go.Shape, {fill: null, stroke: "blue", strokeWidth: 2}),
             $(go.Placeholder)  // a Placeholder sizes itself to the selected Node
         ),
         // the button to create a "next" node, at the top-right corner
@@ -95,7 +95,7 @@ myDiagram.nodeTemplate.selectionAdornmentTemplate =
                 alignment: go.Spot.TopRight,
                 click: addNodeAndLink  // this function is defined below
             },
-            $(go.Shape, "PlusLine", { width: 6, height: 6 })
+            $(go.Shape, "PlusLine", {width: 6, height: 6})
         ) // end button
     ); // end Adornment
 
@@ -110,7 +110,7 @@ function addNodeAndLink(e, obj) {
     var fromNode = adornment.adornedPart;
     var fromData = fromNode.data;
     // create a new "State" data object, positioned off to the right of the adorned Node
-    var toData = { text: "new" };
+    var toData = {text: "new"};
     var p = fromNode.location.copy();
     p.x += 200;
     toData.loc = go.Point.stringify(p);  // the "loc" property is a string, not a Point object
@@ -149,14 +149,14 @@ myDiagram.linkTemplate =
         new go.Binding("points").makeTwoWay(),
         new go.Binding("curviness"),
         $(go.Shape,  // the link shape
-            { strokeWidth: 1.5 }),
+            {strokeWidth: 1.5}),
         $(go.Shape,  // the arrowhead
-            { toArrow: "standard", stroke: null }),
+            {toArrow: "standard", stroke: null}),
         $(go.Panel, "Auto",
             $(go.Shape,  // the label background, which becomes transparent around the edges
                 {
                     fill: $(go.Brush, "Radial",
-                        { 0: "rgb(240, 240, 240)", 0.3: "rgb(240, 240, 240)", 1: "rgba(240, 240, 240, 0)" }),
+                        {0: "rgb(240, 240, 240)", 0.3: "rgb(240, 240, 240)", 1: "rgba(240, 240, 240, 0)"}),
                     stroke: null
                 }),
             $(go.TextBlock, "transition",  // the label text
@@ -175,5 +175,22 @@ myDiagram.linkTemplate =
 load();
 
 function load() {
-    myDiagram.model = go.Model.fromJson(jsonData);
+    // myDiagram.model = go.Model.fromJson(jsonData);
+
+    jquery.get("/microservices/get/graph", function (data) {
+        console.log("success");
+        console.log(data);
+        myDiagram.model = go.Model.fromJson(data);
+
+    })
+        .done(function (data) {
+            console.log("second success");
+            console.log(data);
+        })
+        .fail(function () {
+            console.log("error");
+        })
+        .always(function () {
+            console.log("finished");
+        });
 }
