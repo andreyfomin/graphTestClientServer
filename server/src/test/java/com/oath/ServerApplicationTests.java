@@ -1,4 +1,4 @@
-package com.server.server;
+package com.oath;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

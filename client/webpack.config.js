@@ -7,7 +7,7 @@ module.exports = {
     devtool: 'inline-source-map',
     output: {
         filename: 'bundle.js',
-        path: path.resolve(__dirname, 'dist/META-INF/resources/webjars/atriclient')
+        path: path.resolve(__dirname, 'dist')
     },
     module: {
         rules: [
@@ -28,7 +28,7 @@ module.exports = {
     plugins: [
         new HtmlWebpackPlugin(),
         new CleanWebpackPlugin(
-            ['dist/META-INF/resources/webjars/atriclient'],
+            ['dist'],
             {
                 root: path.resolve(__dirname),
                 verbose: true,

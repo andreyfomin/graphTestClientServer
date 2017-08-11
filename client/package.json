@@ -6,7 +6,7 @@
   "scripts": {
     "test": "test",
     "build": "webpack",
-    "debug": "webpack-dev-server --inline --hot --color --open --content-base dist/META-INF/resources/webjars/atriclient"
+    "debug": "webpack-dev-server --inline --hot --color --open --content-base dist"
   },
   "author": "Andrey Fomin",
   "license": "ISC",

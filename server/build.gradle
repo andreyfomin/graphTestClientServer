@@ -33,6 +33,7 @@ dependencies {
     compile('org.webjars:webjars-locator:+')
     compile project(':client')
     compileOnly('org.projectlombok:lombok:+')
+    compile('org.webjars:bootstrap:3.3.7')
 }
 
 
