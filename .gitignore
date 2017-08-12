@@ -13,8 +13,7 @@ $RECYCLE.BIN/
 *.msi
 *.msm
 *.msp
-.gradle/**
-.idea/**
+*.iml
 
 # Windows shortcuts
 *.lnk
@@ -47,3 +46,11 @@ $RECYCLE.BIN/
 Network Trash Folder
 Temporary Items
 .apdisk
+/client/dist/
+/client/build/
+/client/.gradle/
+/client/node_modules/
+/.gradle/
+/.idea/
+/server/.gradle/
+/server/build/

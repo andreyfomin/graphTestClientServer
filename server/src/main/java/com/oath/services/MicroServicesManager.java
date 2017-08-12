@@ -7,17 +7,19 @@ import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 @Service
 public class MicroServicesManager {
     public MicroServicesGraphModel getMicroServicesGraph() {
+        Random random = new Random();
 
         List<NodeData> nodes = Arrays.asList(
-                new NodeData(0, "120 120", "Initial" ),
-                new NodeData(1, "330 120", "First down"),
-                new NodeData(2, "226 376", "First up" ),
-                new NodeData(3, "60 276", "Second down" ),
-                new NodeData(4, "226 226", "Wait")
+                new NodeData(0, "120 120", "Initial" + random.nextInt(100) ),
+                new NodeData(1, "330 120", "First down" + random.nextInt(100)),
+                new NodeData(2, "226 376", "First up"  + random.nextInt(100)),
+                new NodeData(3, "60 276", "Second down"  + random.nextInt(100)),
+                new NodeData(4, "226 226", "Wait" + random.nextInt(100))
         );
 
         List<LinkData> links = Arrays.asList(
