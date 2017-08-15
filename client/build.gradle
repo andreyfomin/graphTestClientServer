@@ -25,7 +25,7 @@ task dist(dependsOn: [npmRunBuild]) {
     }
 }
 
-build.dependsOn dist
+jar.dependsOn dist
 
 jar {
     into 'META-INF/resources/webjars/client', {
