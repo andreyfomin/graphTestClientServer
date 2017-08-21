@@ -3,10 +3,9 @@ import go from 'gojs';
 
 import './index.css';
 
-
 export default class MicroServiceGraphLoader {
 
-    constructor(){
+    constructor() {
         Object.assign(
             this,
             {
@@ -25,36 +24,30 @@ export default class MicroServiceGraphLoader {
         this.myDiagram =
             $(this.go.Diagram, "myDiagramDiv",  // must name or refer to the DIV HTML element
                 {
+                    initialAutoScale: this.go.Diagram.Uniform,
+                    // layout: $(this.go.LayeredDigraphLayout),
+                    layout:
+                        $(go.ForceDirectedLayout,  // automatically spread nodes apart
+                            { maxIterations: 200, defaultSpringLength: 30, defaultElectricalCharge: 100 }),
+                    // direction:0,
                     // start everything in the middle of the viewport
                     initialContentAlignment: this.go.Spot.Center,
                     // have mouse wheel events zoom in and out instead of scroll up and down
                     "toolManager.mouseWheelBehavior": this.go.ToolManager.WheelZoom,
                     // support double-click in background creating a new node
-                    "clickCreatingTool.archetypeNodeData": {text: "new node"},
+                    // "clickCreatingTool.archetypeNodeData": {text: "new node"},
                     // enable undo & redo
                     "undoManager.isEnabled": true
                 });
 
-        // when the document is modified, add a "*" to the title and enable the "Save" button
-        this.myDiagram.addDiagramListener("Modified", (e) => {
-            const button = document.getElementById("SaveButton");
-            if (button) button.disabled = !this.myDiagram.isModified;
-            const idx = document.title.indexOf("*");
-            if (this.myDiagram.isModified) {
-                if (idx < 0) document.title += "*";
-            } else {
-                if (idx >= 0) document.title = document.title.substr(0, idx);
-            }
-        });
-
         // define the Node template
         this.myDiagram.nodeTemplate =
             $(this.go.Node, "Auto",
-                new this.go.Binding("location", "loc", this.go.Point.parse).makeTwoWay(this.go.Point.stringify),
+                // new this.go.Binding("location", "loc", this.go.Point.parse).makeTwoWay(this.go.Point.stringify),
                 // define the node's outer shape, which will surround the TextBlock
                 $(this.go.Shape, "RoundedRectangle",
                     {
-                        parameter1: 20,  // the corner has a large radius
+                        parameter1: 8,  // the corner has a large radius
                         fill: $(this.go.Brush, "Linear", {0: "rgb(254, 201, 0)", 1: "rgb(254, 162, 0)"}),
                         stroke: null,
                         portId: "",  // this Shape is the Node's port, not the whole Node
@@ -64,28 +57,11 @@ export default class MicroServiceGraphLoader {
                     }),
                 $(this.go.TextBlock,
                     {
-                        font: "bold 11pt helvetica, bold arial, sans-serif",
-                        editable: true  // editing the text automatically updates the model data
+                        font: "bold 9pt helvetica, bold arial, sans-serif",
+                        editable: false  // editing the text automatically updates the model data
                     },
                     new this.go.Binding("text").makeTwoWay())
             );
-
-        // unlike the normal selection Adornment, this one includes a Button
-        this.myDiagram.nodeTemplate.selectionAdornmentTemplate =
-            $(this.go.Adornment, "Spot",
-                $(this.go.Panel, "Auto",
-                    $(this.go.Shape, {fill: null, stroke: "blue", strokeWidth: 2}),
-                    $(this.go.Placeholder)  // a Placeholder sizes itself to the selected Node
-                ),
-                // the button to create a "next" node, at the top-right corner
-                $("Button",
-                    {
-                        alignment: this.go.Spot.TopRight,
-                        click: this.addNodeAndLink.bind(this)  // this function is defined below
-                    },
-                    $(this.go.Shape, "PlusLine", {width: 6, height: 6})
-                ) // end button
-            ); // end Adornment
 
         // replace the default Link template in the linkTemplateMap
         this.myDiagram.linkTemplate =
@@ -96,18 +72,20 @@ export default class MicroServiceGraphLoader {
                     toShortLength: 3
                 },
                 new this.go.Binding("points").makeTwoWay(),
-                new this.go.Binding("curviness"),
+                // new this.go.Binding("curviness"),
                 $(this.go.Shape,  // the link shape
+                    new go.Binding("stroke", "color"),  // shape.stroke = data.color
                     {strokeWidth: 1.5}),
                 $(this.go.Shape,  // the arrowhead
+                    new go.Binding("stroke", "color"),  // shape.stroke = data.color
                     {toArrow: "standard", stroke: null}),
                 $(this.go.Panel, "Auto",
-                    $(this.go.Shape,  // the label background, which becomes transparent around the edges
-                        {
-                            fill: $(this.go.Brush, "Radial",
-                                {0: "rgb(240, 240, 240)", 0.3: "rgb(240, 240, 240)", 1: "rgba(240, 240, 240, 0)"}),
-                            stroke: null
-                        }),
+                    // $(this.go.Shape,  // the label background, which becomes transparent around the edges
+                    //     {
+                    //         fill: $(this.go.Brush, "Radial",
+                    //             {0: "rgb(240, 240, 240)", 0.3: "rgb(240, 240, 240)", 1: "rgba(240, 240, 240, 0)"}),
+                    //         stroke: null
+                    //     }),
                     $(this.go.TextBlock, "transition",  // the label text
                         {
                             textAlign: "center",
@@ -121,48 +99,52 @@ export default class MicroServiceGraphLoader {
             );
     }
 
-    // clicking the button inserts a new node to the right of the selected node,
-    // and adds a link to that new node
-    addNodeAndLink(e, obj) {
-        const adornment = obj.part;
-        const diagram = e.diagram;
-        diagram.startTransaction("Add State");
-
-        // get the node data for which the user clicked the button
-        const fromNode = adornment.adornedPart;
-        const fromData = fromNode.data;
-        // create a new "State" data object, positioned off to the right of the adorned Node
-        const toData = {text: "new"};
-        const p = fromNode.location.copy();
-        p.x += 200;
-        toData.loc = this.go.Point.stringify(p);  // the "loc" property is a string, not a Point object
-        // add the new node data to the model
-        const model = diagram.model;
-        model.addNodeData(toData);
-
-        // create a link data from the old node data to the new node data
-        const linkdata = {
-            from: model.getKeyForNodeData(fromData),  // or just: fromData.id
-            to: model.getKeyForNodeData(toData),
-            text: "transition"
-        };
-        // and add the link data to the model
-        model.addLinkData(linkdata);
-
-        // select the new Node
-        const newnode = diagram.findNodeForData(toData);
-        diagram.select(newnode);
-
-        diagram.commitTransaction("Add State");
-
-        // if the new node is off-screen, scroll the diagram to show the new node
-        diagram.scrollToRect(newnode.actualBounds);
-    }
-
     load() {
-        // myDiagram.model = go.Model.fromJson(jsonData);
+        const jsonData = {
+            nodeKeyProperty: "id",
+            nodeDataArray: [
+                {id: 0, loc: "120 120", text: "Initial"},
+                {id: 1, loc: "330 120", text: "First down"},
+                {id: 2, loc: "226 376", text: "First up"},
+                {id: 3, loc: "60 276", text: "Second down"},
+                {id: 4, loc: "226 226", text: "Wait"}
+            ],
+            linkDataArray: [
+                {from: 0, to: 1, text: "down", curviness: 20},
+                {from: 1, to: 0, text: "up (moved)\nPOST", curviness: 20},
+                {from: 1, to: 2, text: "up (no move)"},
+                {from: 1, to: 4, text: "timer"},
+                {from: 2, to: 0, text: "timer\nPOST"},
+                {from: 2, to: 3, text: "down"},
+                {from: 3, to: 0, text: "up\nPOST\n(dblclick\nif no move)"},
+                {from: 4, to: 0, text: "up\nPOST"}
+            ]
+        };
 
-        this.jquery.get("/microservices/get/graph", (data) => {
+        const jsonData2 = {
+            nodeKeyProperty: 'id',
+            nodeDataArray: [
+                {id: 'a', text: "Initial"},
+                {id: 'b', text: "First down"},
+                {id: 'c', text: "First up"},
+                {id: 'd', text: "Second down"},
+                {id: 'e', text: "Wait"}
+            ],
+            linkDataArray: [
+                {from: 'a', to: 'b',  text: "down", color: 'red'},
+                {from: 'b', to: 'a', text: "up (moved)\nPOST", color: 'green'},
+                {from: 'a', to: 'c', text: "up (no move)"},
+                {from: 'b', to: 'e', text: "timer"},
+                {from: 'c', to: 'a', text: "timer\nPOST"},
+                {from: 'c', to: 'd', text: "down"},
+                {from: 'd', to: 'a', text: ""},
+                {from: 'e', to: 'a', text: "up\nPOST"}
+            ]
+        };
+
+        // this.myDiagram.model = go.Model.fromJson(jsonData2);
+
+        this.jquery.get("./microservices/get/graph", (data) => {
             console.log("success");
             console.log(data);
             this.myDiagram.model = this.go.Model.fromJson(data);
@@ -172,10 +154,10 @@ export default class MicroServiceGraphLoader {
                 console.log("second success");
                 console.log(data);
             })
-            .fail(() =>{
+            .fail(() => {
                 console.log("error");
             })
-            .always(() =>{
+            .always(() => {
                 console.log("finished");
             });
     }
