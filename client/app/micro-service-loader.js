@@ -1,5 +1,6 @@
 import jquery from 'jquery';
 import go from 'gojs';
+import jsonData2 from './data/jasonData2.json';
 
 import './index.css';
 
@@ -28,7 +29,7 @@ export default class MicroServiceGraphLoader {
                     // layout: $(this.go.LayeredDigraphLayout),
                     layout:
                         $(go.ForceDirectedLayout,  // automatically spread nodes apart
-                            { maxIterations: 200, defaultSpringLength: 30, defaultElectricalCharge: 100 }),
+                            {maxIterations: 200, defaultSpringLength: 30, defaultElectricalCharge: 100}),
                     // direction:0,
                     // start everything in the middle of the viewport
                     initialContentAlignment: this.go.Spot.Center,
@@ -100,28 +101,7 @@ export default class MicroServiceGraphLoader {
     }
 
     load() {
-        const jsonData = {
-            nodeKeyProperty: "id",
-            nodeDataArray: [
-                {id: 0, loc: "120 120", text: "Initial"},
-                {id: 1, loc: "330 120", text: "First down"},
-                {id: 2, loc: "226 376", text: "First up"},
-                {id: 3, loc: "60 276", text: "Second down"},
-                {id: 4, loc: "226 226", text: "Wait"}
-            ],
-            linkDataArray: [
-                {from: 0, to: 1, text: "down", curviness: 20},
-                {from: 1, to: 0, text: "up (moved)\nPOST", curviness: 20},
-                {from: 1, to: 2, text: "up (no move)"},
-                {from: 1, to: 4, text: "timer"},
-                {from: 2, to: 0, text: "timer\nPOST"},
-                {from: 2, to: 3, text: "down"},
-                {from: 3, to: 0, text: "up\nPOST\n(dblclick\nif no move)"},
-                {from: 4, to: 0, text: "up\nPOST"}
-            ]
-        };
-
-        const jsonData2 = {
+        const jsonData1 = {
             nodeKeyProperty: 'id',
             nodeDataArray: [
                 {id: 'a', text: "Initial"},
@@ -131,7 +111,7 @@ export default class MicroServiceGraphLoader {
                 {id: 'e', text: "Wait"}
             ],
             linkDataArray: [
-                {from: 'a', to: 'b',  text: "down", color: 'red'},
+                {from: 'a', to: 'b', text: "down", color: 'red'},
                 {from: 'b', to: 'a', text: "up (moved)\nPOST", color: 'green'},
                 {from: 'a', to: 'c', text: "up (no move)"},
                 {from: 'b', to: 'e', text: "timer"},
@@ -142,23 +122,23 @@ export default class MicroServiceGraphLoader {
             ]
         };
 
-        // this.myDiagram.model = go.Model.fromJson(jsonData2);
+        this.myDiagram.model = go.Model.fromJson(jsonData2);
 
-        this.jquery.get("./microservices/get/graph", (data) => {
-            console.log("success");
-            console.log(data);
-            this.myDiagram.model = this.go.Model.fromJson(data);
-
-        })
-            .done((data) => {
-                console.log("second success");
-                console.log(data);
-            })
-            .fail(() => {
-                console.log("error");
-            })
-            .always(() => {
-                console.log("finished");
-            });
+        // this.jquery.get("./microservices/get/graph", (data) => {
+        //     console.log("success");
+        //     console.log(data);
+        //     this.myDiagram.model = this.go.Model.fromJson(data);
+        //
+        // })
+        //     .done((data) => {
+        //         console.log("second success");
+        //         console.log(data);
+        //     })
+        //     .fail(() => {
+        //         console.log("error");
+        //     })
+        //     .always(() => {
+        //         console.log("finished");
+        //     });
     }
 }

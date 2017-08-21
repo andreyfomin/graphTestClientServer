@@ -17,7 +17,7 @@ public class MicroServicesController {
     @RequestMapping(value = "/get/graph", method = RequestMethod.GET)
     public
     @ResponseBody
-    MicroServicesGraphModel evictAllCaches() {
+    MicroServicesGraphModel getMicroServiceGraphObject() {
         return microServicesManager.getMicroServicesGraph();
     }
 }

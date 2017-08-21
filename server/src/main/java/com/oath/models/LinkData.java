@@ -11,14 +11,14 @@ import lombok.*;
 public class LinkData {
 
     @NonNull
-    private Integer from;
+    private String from;
 
     @NonNull
-    private Integer to;
+    private String to;
 
     @NonNull
     private String text;
 
-    private Integer curviness;
+    private String color;
 
 }

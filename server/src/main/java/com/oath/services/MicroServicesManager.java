@@ -15,26 +15,22 @@ public class MicroServicesManager {
         Random random = new Random();
 
         List<NodeData> nodes = Arrays.asList(
-                new NodeData(0, "120 120", "Initial" + random.nextInt(100) ),
-                new NodeData(1, "330 120", "First down" + random.nextInt(100)),
-                new NodeData(2, "226 376", "First up"  + random.nextInt(100)),
-                new NodeData(3, "60 276", "Second down"  + random.nextInt(100)),
-                new NodeData(4, "226 226", "Wait" + random.nextInt(100))
+                new NodeData("a", "Initial" + random.nextInt(100) ),
+                new NodeData("b", "First down" + random.nextInt(100)),
+                new NodeData("c", "First up"  + random.nextInt(100)),
+                new NodeData("d", "Second down"  + random.nextInt(100)),
+                new NodeData("e", "Wait" + random.nextInt(100))
         );
 
         List<LinkData> links = Arrays.asList(
-                new LinkData(0, 0, "up or timer", -20),
-                new LinkData(0, 1, "down", 20),
-                new LinkData(1, 0, "up (moved)\nPOST", 20),
-                new LinkData(1, 1, "down", -20),
-                new LinkData(1, 2, "up (no move)"),
-                new LinkData(1, 4, "timer"),
-                new LinkData(2, 0, "timer\nPOST"),
-                new LinkData(2, 3, "down" ),
-                new LinkData(3, 0, "up\nPOST\n(dblclick\nif no move)"),
-                new LinkData(3, 3, "down or timer", 20),
-                new LinkData(4, 0, "up\nPOST"),
-                new LinkData(4, 4, "down")
+                new LinkData("a", "b", "down", "red"),
+                new LinkData("b", "a", "up (moved)\nPOST", "green"),
+                new LinkData("a", "c", "up (no move)"),
+                new LinkData("b", "e", "timer"),
+                new LinkData("c", "a", "timer\nPOST"),
+                new LinkData("c", "d", "down" ),
+                new LinkData("d", "a", "up\nPOST\n(dblclick\nif no move)"),
+                new LinkData("e", "a", "up\nPOST")
                 );
         return new MicroServicesGraphModel("id", nodes, links);
     }
